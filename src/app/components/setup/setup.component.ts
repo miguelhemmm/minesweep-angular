@@ -10,12 +10,13 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./setup.component.scss'],
 })
 export class SetupComponent implements OnInit, OnDestroy {
-  private db = inject(Firestore);
   private uiService = inject(UiService);
   public destroyed = false;
 
+  constructor(private firestore: Firestore) {}
+
   public ngOnInit(): void {
-    const lastGameData = collection(this.db, 'lastgame');
+    const lastGameData = collection(this.firestore, 'lastgame');
     collectionData(lastGameData)
       .pipe(takeWhile(() => !this.destroyed))
       .subscribe({

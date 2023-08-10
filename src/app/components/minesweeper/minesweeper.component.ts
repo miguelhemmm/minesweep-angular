@@ -30,8 +30,9 @@ export class MinesweeperComponent implements OnInit, OnDestroy {
   public mines = 0;
   private uiService = inject(UiService);
   private toastr = inject(ToastrService);
-  private firestore: Firestore = inject(Firestore);
   private cd = inject(ChangeDetectorRef);
+
+  constructor(private firestore: Firestore) {}
 
   ngOnInit(): void {
     this.gameStatus$ = this.uiService.getGameStatus();
