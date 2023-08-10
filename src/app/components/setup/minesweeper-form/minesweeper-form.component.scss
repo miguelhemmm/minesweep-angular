@@ -6,6 +6,7 @@
 
   &__buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
 
     .active {
@@ -31,10 +32,11 @@
 
   &__start {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
 
     button {
-      width: 150px;
+      width: 120px;
       background-color: #9681eb;
     }
   }

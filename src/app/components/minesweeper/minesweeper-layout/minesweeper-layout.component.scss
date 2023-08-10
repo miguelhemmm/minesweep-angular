@@ -7,19 +7,21 @@
     display: flex;
     flex-wrap: wrap;
 
-    &-cell {
+    &-tile {
       display: flex;
       align-items: center;
       justify-content: center;
       background: rgb(155, 232, 216);
       cursor: pointer;
       border: 1px solid #1d5b79;
-      height: 30px;
-      width: 30px;
+      height: 3rem;
+      width: 3rem;
     }
 
     .mine {
       display: flex;
+      font-size: 1.6rem;
+      font-weight: bold;
       img {
         width: 25px;
       }

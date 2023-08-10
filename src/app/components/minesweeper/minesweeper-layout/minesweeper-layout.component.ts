@@ -211,26 +211,47 @@ export class MinesweeperLayoutComponent implements OnInit {
       [1, 1],
     ];
 
+    const isInsideBoard = (x: number, y: number) =>
+      x >= 0 && x < this.boardSize && y >= 0 && y < this.boardSize;
+
+    const hasMineAt = (x: number, y: number) =>
+      isInsideBoard(x, y) && this.board[x][y].hasMine;
+
     for (let i = 0; i < this.boardSize; i++) {
       for (let j = 0; j < this.boardSize; j++) {
         if (!this.board[i][j].hasMine) {
-          const count = directions.reduce((acc, [x, y]) => {
-            const ni = i + x;
-            const nj = j + y;
-            if (
-              ni >= 0 &&
-              ni < this.boardSize &&
-              nj >= 0 &&
-              nj < this.boardSize &&
-              this.board[ni][nj].hasMine
-            ) {
-              acc++;
+          let mineCount = 0;
+
+          for (const [dx, dy] of directions) {
+            if (hasMineAt(i + dx, j + dy)) {
+              mineCount++;
             }
-            return acc;
-          }, 0);
-          this.board[i][j].adjacentMines = count;
+          }
+
+          this.board[i][j].adjacentMines = mineCount;
         }
       }
     }
+  }
+
+  getCellStyle(cell: Tile): object {
+    let color;
+    switch (cell.adjacentMines) {
+      case 1:
+        color = '#4477CE';
+        break;
+      case 2:
+        color = '#1A5D1A';
+        break;
+      case 3:
+        color = '#C70039';
+        break;
+      case 4:
+        color = '#35155D';
+        break;
+      default:
+        color = 'black';
+    }
+    return { color: color };
   }
 }

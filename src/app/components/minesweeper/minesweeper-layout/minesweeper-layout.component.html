@@ -1,14 +1,19 @@
 <main class="layout" [ngClass]="selectedLevel">
   <div class="layout__board">
-    <div *ngFor="let tile of board" class="layout__board-tile">
-      <div *ngFor="let cell of tile" class="layout__board-cell"
-        [ngStyle]="{'background': cell.isRevealed && !cell.hasMine && '#45CFDD'}" (click)="revealTile(cell)"
-        (contextmenu)="setFlag($event, cell)">
-        <span *ngIf="cell.isRevealed && cell.hasMine" class="mine">
+    <div *ngFor="let tiles of board" class="layout__board-tiles">
+      <div *ngFor="let tile of tiles" class="layout__board-tile"
+        [ngStyle]="{'background': tile.isRevealed && !tile.hasMine && '#45CFDD'}" (click)="revealTile(tile)"
+        (contextmenu)="setFlag($event, tile)">
+        <span *ngIf="tile.isRevealed && tile.hasMine" class="mine">
           <img src="assets/mine.png" />
         </span>
-        <span *ngIf="!cell.isRevealed && cell.isFlagged" class="mine">
+        <span *ngIf="!tile.isRevealed && tile.isFlagged" class="mine">
           <img src="assets/flag.png" />
+        </span>
+        <span *ngIf="tile.isRevealed && !tile.isFlagged && !tile.hasMine" class="mine">
+          <span [ngStyle]="getCellStyle(tile)">
+            {{tile.adjacentMines}}
+          </span>
         </span>
       </div>
     </div>
