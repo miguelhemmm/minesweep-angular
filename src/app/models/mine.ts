@@ -11,6 +11,13 @@ export enum GameStatus {
   NONE = '',
 }
 
+export interface Log {
+  difficulty: string;
+  ellapsedTime: string | number;
+  endTime: string | Date;
+  startTime: string | Date;
+  status: string;
+}
 export interface Tile {
   hasMine: boolean;
   adjacentMines: number;

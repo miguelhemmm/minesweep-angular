@@ -2,14 +2,14 @@
   <div class="minesweeper__back">
     <button routerLink="/">Go Back</button>
     <div class="minesweeper__back-right-buttons">
-      <button routerLink="/history">Games Log</button>
+      <button routerLink="/history">History Log</button>
       <button (click)="onSaveGame()">Save Game</button>
     </div>
   </div>
   <h1> MineSweeper</h1>
   <div class="minesweeper__main">
-    <app-minesweeper-header></app-minesweeper-header>
-    <app-minesweeper-layout></app-minesweeper-layout>
+    <app-minesweeper-header [mines]="mines"></app-minesweeper-header>
+    <app-minesweeper-layout (minesEmitter)="getCurrentMineNumber($event)"></app-minesweeper-layout>
   </div>
   <h1>{{ gameStatus$ | async }}</h1>
 </main>

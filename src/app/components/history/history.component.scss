@@ -1,0 +1,32 @@
+.history {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  &__table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    width: 100%;
+    padding: 20px;
+
+    &-header {
+      font-weight: bold;
+      background-color: #f2f2f2;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    span {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+  }
+
+  button {
+    width: 140px;
+  }
+
+  &__pagination {
+    align-self: center;
+  }
+}

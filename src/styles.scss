@@ -1,3 +1,5 @@
+@import "ngx-toastr/toastr";
+
 * {
   box-sizing: border-box;
 }
@@ -31,4 +33,9 @@ button {
   color: #fff;
   cursor: pointer;
   border-radius: 2px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

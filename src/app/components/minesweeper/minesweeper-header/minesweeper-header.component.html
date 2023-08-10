@@ -1,4 +1,10 @@
 <main class="header" [ngStyle]="{'width': headerSize}">
+  <div class="header__counter">
+    <img src="assets/mine.png" />
+    <span>
+      {{ mines }}
+    </span>
+  </div>
   <span class="header__img" (click)="resetGame()">
     <img [src]="statusImg" alt="status face" />
   </span>

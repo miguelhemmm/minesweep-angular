@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { GameStatus, Level, Tile } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
@@ -9,6 +9,11 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./minesweeper-layout.component.scss'],
 })
 export class MinesweeperLayoutComponent implements OnInit {
+  @Output() minesEmitter: EventEmitter<number> = new EventEmitter();
+
+  public startTime = new Date();
+  public endTime = new Date();
+  public mines: number = 0;
   public selectedLevel: Level = Level.EASY;
   public gameStatus: GameStatus = GameStatus.NONE;
   public boardSize = 9;
@@ -35,6 +40,10 @@ export class MinesweeperLayoutComponent implements OnInit {
         );
       },
     });
+  }
+
+  public setStartingValues() {
+    this.startTime = new Date(Date.now());
   }
 
   public revealTile(tile: Tile, x?: number, y?: number) {
@@ -88,7 +97,11 @@ export class MinesweeperLayoutComponent implements OnInit {
   public setFlag(event: Event, tile: Tile) {
     event.preventDefault();
     if (this.gameStatus !== GameStatus.NONE) return;
-    tile.isFlagged = true;
+    tile.isFlagged = !tile.isFlagged;
+    if (this.mines > 0) {
+      this.mines--;
+    }
+    this.minesEmitter.emit(this.mines);
   }
 
   private gameOver() {
@@ -98,6 +111,16 @@ export class MinesweeperLayoutComponent implements OnInit {
       })
     );
     this.gameStatus = GameStatus.LOSE;
+    this.endTime = new Date(Date.now());
+
+    const logValue = {
+      difficulty: this.selectedLevel,
+      ellapsedTime: (this.endTime.valueOf() - this.startTime.valueOf()) / 1000,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      status: this.gameStatus,
+    };
+    this.uiService.setHistoryLog(logValue);
     this.uiService.setGameStatus(this.gameStatus);
   }
 
@@ -111,6 +134,16 @@ export class MinesweeperLayoutComponent implements OnInit {
     }
 
     this.gameStatus = GameStatus.WON;
+    this.endTime = new Date(Date.now());
+
+    const logValue = {
+      difficulty: this.selectedLevel,
+      ellapsedTime: (this.endTime.valueOf() - this.startTime.valueOf()) / 1000,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      status: this.gameStatus,
+    };
+    this.uiService.setHistoryLog(logValue);
     this.uiService.setGameStatus(this.gameStatus);
   }
 
@@ -137,6 +170,7 @@ export class MinesweeperLayoutComponent implements OnInit {
         this.boardSize = 9;
         mines = 9;
     }
+    this.mines = mines;
     this.initializeBoard(mines);
   }
 
@@ -157,6 +191,11 @@ export class MinesweeperLayoutComponent implements OnInit {
         isFlagged: false,
       }));
     }
+    this.uiService.setSavedData({
+      numberOfSides: this.boardSize,
+      numberOfMines: mines,
+    });
+    this.minesEmitter.emit(mines);
     this.calculateAdjacentMines();
   }
 

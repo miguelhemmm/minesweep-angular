@@ -1,1 +1,23 @@
-<p>history works!</p>
+<main class="history">
+  <button routerLink="/">Back to Configuration</button>
+  <div class="history__table">
+    <span class="history__table-header">Start Time</span>
+    <span class="history__table-header">End Time</span>
+    <span class="history__table-header">Time Spent</span>
+    <span class="history__table-header">Difficulty</span>
+    <span class="history__table-header">Status</span>
+
+    <ng-container *ngFor="let log of displayedLogs">
+      <span>{{log.startTime}}</span>
+      <span>{{log.endTime}}</span>
+      <span>{{log.ellapsedTime}}</span>
+      <span>{{log.difficulty}}</span>
+      <span>{{log.status}}</span>
+    </ng-container>
+  </div>
+  <div class="history__pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{currentPage}} of {{ totalItems / itemsPerPage | roundPipe:'ceil' }}</span>
+    <button (click)="nextPage()">Next</button>
+  </div>
+</main>

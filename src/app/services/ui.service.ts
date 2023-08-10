@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Configuration, GameStatus, Level } from '../models/mine';
+import { Configuration, GameStatus, Level, Log } from '../models/mine';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +12,14 @@ export class UiService {
   private gameStatus$: BehaviorSubject<GameStatus> =
     new BehaviorSubject<GameStatus>(GameStatus.NONE);
   private gameConfiguration$: BehaviorSubject<Configuration> =
-    new BehaviorSubject({ numberOfMines: 0, numberOfSides: 9 });
+    new BehaviorSubject({ numberOfMines: 1, numberOfSides: 9 });
   private savedData$: BehaviorSubject<Configuration> = new BehaviorSubject({
-    numberOfMines: 0,
+    numberOfMines: 1,
     numberOfSides: 9,
   });
+
+  private historyLog$: BehaviorSubject<Log | null> =
+    new BehaviorSubject<Log | null>(null);
 
   public getSelectedLevel(): Observable<Level> {
     return this.selectedLevel$.asObservable();
@@ -48,5 +51,13 @@ export class UiService {
 
   public setSavedData(value: Configuration): void {
     this.savedData$.next(value);
+  }
+
+  public getHistoryLog(): Observable<Log | null> {
+    return this.historyLog$.asObservable();
+  }
+
+  public setHistoryLog(value: Log | null): void {
+    this.historyLog$.next(value);
   }
 }

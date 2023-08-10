@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { GameStatus, Level } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
@@ -9,7 +9,9 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./minesweeper-header.component.scss'],
 })
 export class MinesweeperHeaderComponent implements OnInit {
+  @Input() mines: number = 0;
   public headerSize = '270px';
+  public timeEllapsed = 0;
   public gameStatus = '';
   public selectedLevel = Level.EASY;
   public sides = 0;
@@ -33,6 +35,7 @@ export class MinesweeperHeaderComponent implements OnInit {
   public resetGame() {
     this.uiService.setSelectedLevel(this.selectedLevel);
     this.uiService.setGameStatus(GameStatus.NONE);
+    this.uiService.setHistoryLog(null);
   }
 
   public setHeaderSize(level: Level) {
