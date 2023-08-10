@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import { GameStatus, Level } from 'src/app/models/mine';
+import { Configuration, GameStatus, Level } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
 
 @Component({
@@ -9,12 +9,13 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./minesweeper-header.component.scss'],
 })
 export class MinesweeperHeaderComponent implements OnInit {
-  @Input() mines: number = 0;
+  @Input() mines = 0;
   public headerSize = '270px';
   public timeEllapsed = 0;
   public gameStatus = '';
   public selectedLevel = Level.EASY;
   public sides = 0;
+  public originalConfiguration: Configuration | null = null;
   private uiService = inject(UiService);
 
   ngOnInit(): void {
@@ -25,14 +26,19 @@ export class MinesweeperHeaderComponent implements OnInit {
     ]).subscribe({
       next: ([level, status, configuration]) => {
         this.gameStatus = status;
-        this.sides = configuration.numberOfSides;
-        this.selectedLevel = level;
-        this.setHeaderSize(level);
+        this.originalConfiguration = { ...(configuration as Configuration) };
+        this.sides = configuration?.numberOfSides as number;
+        this.selectedLevel = configuration?.level || level;
+        this.setHeaderSize(configuration?.level || level);
       },
     });
   }
 
   public resetGame() {
+    this.uiService.setGameConfiguration({
+      ...this.originalConfiguration,
+      board: undefined,
+    } as Configuration);
     this.uiService.setSelectedLevel(this.selectedLevel);
     this.uiService.setGameStatus(GameStatus.NONE);
     this.uiService.setHistoryLog(null);
@@ -50,8 +56,7 @@ export class MinesweeperHeaderComponent implements OnInit {
         this.headerSize = '600px';
         break;
       case Level.PERSONALIZED:
-        const size = this.sides * 30;
-        this.headerSize = `${size}px`;
+        this.headerSize = `${this.sides * 30}px`;
         break;
       default:
         this.headerSize = '270px';

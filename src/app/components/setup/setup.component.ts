@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { collectionData } from '@angular/fire/firestore';
 import { Firestore, collection } from '@angular/fire/firestore';
-import { take, takeWhile } from 'rxjs';
+import { takeWhile } from 'rxjs';
+import { Tile } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
 
 @Component({
@@ -21,8 +22,15 @@ export class SetupComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => !this.destroyed))
       .subscribe({
         next: (data) => {
-          const { numberOfSides, numberOfMines } = data[0]['configuration'];
-          this.uiService.setGameConfiguration({ numberOfMines, numberOfSides });
+          const { numberOfSides, numberOfMines, level } =
+            data[0]['configuration'];
+          const board = localStorage.getItem('board') as unknown as Tile[][];
+          this.uiService.setGameConfiguration({
+            numberOfMines,
+            numberOfSides,
+            level,
+            board,
+          });
         },
       });
   }

@@ -1,5 +1,12 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
+import { combineLatest, takeWhile } from 'rxjs';
 import { GameStatus, Level, Tile } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
 
@@ -8,42 +15,68 @@ import { UiService } from 'src/app/services/ui.service';
   templateUrl: './minesweeper-layout.component.html',
   styleUrls: ['./minesweeper-layout.component.scss'],
 })
-export class MinesweeperLayoutComponent implements OnInit {
+export class MinesweeperLayoutComponent implements OnInit, OnDestroy {
   @Output() minesEmitter: EventEmitter<number> = new EventEmitter();
 
   public startTime = new Date();
+  public destroyed = false;
   public endTime = new Date();
-  public mines: number = 0;
+  public mines = 0;
   public selectedLevel: Level = Level.EASY;
   public gameStatus: GameStatus = GameStatus.NONE;
   public boardSize = 9;
   public board: Tile[][] = [];
+  public savedBoard: Tile[][] = [];
 
   private uiService = inject(UiService);
 
   ngOnInit(): void {
+    this.startTime = new Date(Date.now());
+
     combineLatest([
       this.uiService.getSelectedLevel(),
       this.uiService.getGameConfiguration(),
-    ]).subscribe({
-      next: ([level, gameConfiguration]) => {
-        this.selectedLevel = level;
+    ])
+      .pipe(takeWhile(() => !this.destroyed))
+      .subscribe({
+        next: ([level, gameConfiguration]) => {
+          this.selectedLevel = level;
+          this.savedBoard = [];
 
-        if (level !== Level.PERSONALIZED) {
-          this.setBoardTiles(level);
-          return;
-        }
-        this.setBoardTiles(
-          level,
-          gameConfiguration.numberOfSides,
-          gameConfiguration.numberOfMines
-        );
-      },
-    });
+          if (gameConfiguration?.board) {
+            this.savedBoard = JSON.parse(
+              gameConfiguration.board as unknown as string
+            );
+
+            this.setBoardTiles(
+              gameConfiguration.level,
+              gameConfiguration?.numberOfSides,
+              gameConfiguration?.numberOfMines
+            );
+            return;
+          }
+
+          if (level !== Level.PERSONALIZED) {
+            this.setBoardTiles(level);
+            return;
+          }
+
+          this.setBoardTiles(
+            level,
+            gameConfiguration?.numberOfSides,
+            gameConfiguration?.numberOfMines
+          );
+        },
+      });
   }
 
-  public setStartingValues() {
-    this.startTime = new Date(Date.now());
+  public setBoardLocalStorage(board: Tile[][]) {
+    this.uiService.setSavedData({
+      numberOfSides: this.boardSize,
+      numberOfMines: this.mines,
+      level: this.selectedLevel,
+      board,
+    });
   }
 
   public revealTile(tile: Tile, x?: number, y?: number) {
@@ -91,16 +124,18 @@ export class MinesweeperLayoutComponent implements OnInit {
         }
       }
     }
+    this.setBoardLocalStorage(this.board);
     this.checkGameStatus();
   }
 
   public setFlag(event: Event, tile: Tile) {
     event.preventDefault();
-    if (this.gameStatus !== GameStatus.NONE) return;
+    if (this.gameStatus !== GameStatus.NONE || tile.isRevealed) return;
     tile.isFlagged = !tile.isFlagged;
     if (this.mines > 0) {
       this.mines--;
     }
+    this.setBoardLocalStorage(this.board);
     this.minesEmitter.emit(this.mines);
   }
 
@@ -120,6 +155,7 @@ export class MinesweeperLayoutComponent implements OnInit {
       endTime: this.endTime,
       status: this.gameStatus,
     };
+    localStorage.removeItem('board');
     this.uiService.setHistoryLog(logValue);
     this.uiService.setGameStatus(this.gameStatus);
   }
@@ -133,6 +169,7 @@ export class MinesweeperLayoutComponent implements OnInit {
       }
     }
 
+    localStorage.removeItem('board');
     this.gameStatus = GameStatus.WON;
     this.endTime = new Date(Date.now());
 
@@ -147,7 +184,7 @@ export class MinesweeperLayoutComponent implements OnInit {
     this.uiService.setGameStatus(this.gameStatus);
   }
 
-  public setBoardTiles(level: Level, sides: number = 9, mines: number = 0) {
+  public setBoardTiles(level: Level, sides = 9, mines = 0) {
     this.gameStatus = GameStatus.NONE;
     switch (level) {
       case Level.EASY:
@@ -191,10 +228,6 @@ export class MinesweeperLayoutComponent implements OnInit {
         isFlagged: false,
       }));
     }
-    this.uiService.setSavedData({
-      numberOfSides: this.boardSize,
-      numberOfMines: mines,
-    });
     this.minesEmitter.emit(mines);
     this.calculateAdjacentMines();
   }
@@ -232,9 +265,12 @@ export class MinesweeperLayoutComponent implements OnInit {
         }
       }
     }
+    if (this.savedBoard.length) {
+      this.board = this.savedBoard;
+    }
   }
 
-  getCellStyle(cell: Tile): object {
+  public getCellStyle(cell: Tile): object {
     let color;
     switch (cell.adjacentMines) {
       case 1:
@@ -253,5 +289,9 @@ export class MinesweeperLayoutComponent implements OnInit {
         color = 'black';
     }
     return { color: color };
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed = true;
   }
 }

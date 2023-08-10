@@ -16,7 +16,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
-import { RoundPipePipe } from './pipes/round-pipe.pipe';
+import { RoundPipe } from './pipes/round-pipe.pipe';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { RoundPipePipe } from './pipes/round-pipe.pipe';
     MinesweeperHeaderComponent,
     SetupComponent,
     HistoryComponent,
-    RoundPipePipe,
+    RoundPipe,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),

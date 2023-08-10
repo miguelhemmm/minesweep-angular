@@ -11,12 +11,14 @@ export class UiService {
   );
   private gameStatus$: BehaviorSubject<GameStatus> =
     new BehaviorSubject<GameStatus>(GameStatus.NONE);
-  private gameConfiguration$: BehaviorSubject<Configuration> =
-    new BehaviorSubject({ numberOfMines: 1, numberOfSides: 9 });
-  private savedData$: BehaviorSubject<Configuration> = new BehaviorSubject({
-    numberOfMines: 1,
-    numberOfSides: 9,
-  });
+  private gameConfiguration$: BehaviorSubject<Configuration | null> =
+    new BehaviorSubject<Configuration | null>(null);
+  private savedData$: BehaviorSubject<Configuration> =
+    new BehaviorSubject<Configuration>({
+      numberOfMines: 1,
+      numberOfSides: 9,
+      level: Level.PERSONALIZED,
+    });
 
   private historyLog$: BehaviorSubject<Log | null> =
     new BehaviorSubject<Log | null>(null);
@@ -37,11 +39,11 @@ export class UiService {
     this.gameStatus$.next(value);
   }
 
-  public getGameConfiguration(): Observable<Configuration> {
+  public getGameConfiguration(): Observable<Configuration | null> {
     return this.gameConfiguration$.asObservable();
   }
 
-  public setGameConfiguration(value: Configuration): void {
+  public setGameConfiguration(value: Configuration | null): void {
     this.gameConfiguration$.next(value);
   }
 

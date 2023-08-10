@@ -39,6 +39,6 @@
   <div class="minesweeper-form__start">
     <button routerLink="/history">History Log</button>
     <button (click)="onStartLevel()" [disabled]="disabledStatus">Start Game</button>
-    <button (click)="onLoadLevel()">Load Game</button>
+    <button (click)="onLoadLevel()" [disabled]="loadedGame">Load Game</button>
   </div>
 </main>

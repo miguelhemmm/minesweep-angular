@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { GameStatus, Level } from 'src/app/models/mine';
+import { Observable } from 'rxjs';
+import { Configuration, GameStatus, Level } from 'src/app/models/mine';
 import { UiService } from 'src/app/services/ui.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { UiService } from 'src/app/services/ui.service';
   templateUrl: './minesweeper-form.component.html',
   styleUrls: ['./minesweeper-form.component.scss'],
 })
-export class MinesweeperFormComponent {
+export class MinesweeperFormComponent implements OnInit {
   public settingsForm!: FormGroup;
   public showForm = false;
   public selectedLevel = Level.EASY;
@@ -18,6 +19,7 @@ export class MinesweeperFormComponent {
   constructor(private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
+    this.uiService.setSelectedLevel(Level.EASY);
     this.settingsForm = this.fb.group({
       numberOfSides: ['', [Validators.required, Validators.min(2)]],
       numberOfMines: ['', [Validators.required, Validators.min(1)]],
@@ -25,6 +27,8 @@ export class MinesweeperFormComponent {
   }
 
   onStartLevel(): void {
+    this.uiService.setGameStatus(GameStatus.NONE);
+    this.uiService.setGameConfiguration(null);
     if (this.settingsForm.valid && this.selectedLevel === Level.PERSONALIZED) {
       this.uiService.setGameConfiguration(this.settingsForm.value);
     }
@@ -32,7 +36,6 @@ export class MinesweeperFormComponent {
   }
 
   onLoadLevel(): void {
-    this.uiService.setSelectedLevel(Level.PERSONALIZED);
     this.uiService.setGameStatus(GameStatus.NONE);
     this.router.navigate(['board']);
   }
@@ -51,6 +54,10 @@ export class MinesweeperFormComponent {
 
   get numberOfMines() {
     return this.settingsForm.get('numberOfMines');
+  }
+
+  get loadedGame() {
+    return localStorage.getItem('board') === null;
   }
 
   get errorStatus(): string {

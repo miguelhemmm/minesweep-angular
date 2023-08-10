@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: public
-          path: .
+          path: public
 
   deploy:
     name: Deploy to firebase
@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: public
-          path: .
+          path: public
 
       - name: Deploy angular app to Firebase
         uses: w9jds/firebase-action@master

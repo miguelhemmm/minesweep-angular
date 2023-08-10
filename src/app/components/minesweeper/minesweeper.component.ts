@@ -44,7 +44,7 @@ export class MinesweeperComponent implements OnInit, OnDestroy {
           if (logHistory) {
             const docRef = collection(this.firestore, 'log');
 
-            addDoc(docRef, logHistory as any).catch((error) => {
+            addDoc(docRef, logHistory).catch((error) => {
               console.error('Error updating configuration:', error);
             });
           }
@@ -65,7 +65,12 @@ export class MinesweeperComponent implements OnInit, OnDestroy {
             'qluTJwbgCXASM5aqbWF9'
           );
 
-          updateDoc(docRef, { configuration })
+          const { numberOfMines, numberOfSides, level, board } = configuration;
+          localStorage.setItem('board', JSON.stringify(board));
+
+          updateDoc(docRef, {
+            configuration: { numberOfMines, numberOfSides, level },
+          })
             .then(() => {
               this.destroyed = true;
               this.toastr.success('Succes!, your game was saved');

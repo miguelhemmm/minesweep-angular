@@ -2,6 +2,7 @@ export enum Level {
   EASY = 'easy',
   MEDIUM = 'medium',
   HARD = 'hard',
+  LOADED = 'loaded',
   PERSONALIZED = 'personalized',
 }
 
@@ -28,4 +29,6 @@ export interface Tile {
 export interface Configuration {
   numberOfSides: number;
   numberOfMines: number;
+  level: Level;
+  board?: Tile[][];
 }

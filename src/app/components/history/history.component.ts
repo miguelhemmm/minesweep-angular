@@ -1,6 +1,5 @@
 import { Log } from './../../models/mine';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { UiService } from 'src/app/services/ui.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { takeWhile, map } from 'rxjs';
 
@@ -10,13 +9,11 @@ import { takeWhile, map } from 'rxjs';
   styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-  private uiService = inject(UiService);
-
   public logList: Log[] = [];
   public destroyed = false;
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
+  public currentPage = 1;
+  public itemsPerPage = 10;
+  public totalItems = 0;
 
   constructor(private firestore: Firestore) {}
 
