@@ -87,8 +87,11 @@
         "deploy": {
           "builder": "@angular/fire:deploy",
           "options": {
-            "version": 2,
-            "browserTarget": "minesweep-angular:build:production"
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "minesweep-angular:build:production",
+            "firebaseProject": "minesweep-angular",
+            "firebaseHostingSite": "minesweep-angular"
           }
         }
       }

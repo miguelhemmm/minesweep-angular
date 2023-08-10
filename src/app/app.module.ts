@@ -1,3 +1,4 @@
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -10,7 +11,6 @@ import { MinesweeperHeaderComponent } from './components/minesweeper/minesweeper
 import { SetupComponent } from './components/setup/setup.component';
 import { HistoryComponent } from './components/history/history.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,13 +30,13 @@ import { RoundPipePipe } from './pipes/round-pipe.pipe';
     RoundPipePipe,
   ],
   imports: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
   ],
   providers: [],
   bootstrap: [AppComponent],

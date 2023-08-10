@@ -1,14 +1,5 @@
 {
   "projects": {
     "default": "minesweep-angular"
-  },
-  "targets": {
-    "minesweep-angular": {
-      "hosting": {
-        "minesweep-angular": [
-          "minesweep-angular"
-        ]
-      }
-    }
   }
 }

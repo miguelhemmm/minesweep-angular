@@ -7,4 +7,5 @@ export const environment = {
     authDomain: 'minesweep-angular.firebaseapp.com',
     messagingSenderId: '892391961566',
   },
+  production: false,
 };
