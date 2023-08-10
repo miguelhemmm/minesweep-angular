@@ -1,0 +1,45 @@
+.minesweeper-form {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__buttons {
+    display: flex;
+    gap: 20px;
+
+    .active {
+      border: 2px solid #9681eb;
+    }
+  }
+
+  &__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      input {
+        height: 40px;
+        border: none;
+        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      }
+    }
+  }
+
+  &__start {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      width: 200px;
+      background-color: #9681eb;
+    }
+  }
+
+  .error {
+    color: #ff6666;
+  }
+}

@@ -1,0 +1,16 @@
+<main class="layout" [ngClass]="selectedLevel">
+  <div class="layout__board">
+    <div *ngFor="let tile of board" class="layout__board-tile">
+      <div *ngFor="let cell of tile" class="layout__board-cell"
+        [ngStyle]="{'background': cell.isRevealed && !cell.hasMine && '#45CFDD'}" (click)="revealTile(cell)"
+        (contextmenu)="setFlag($event, cell)">
+        <span *ngIf="cell.isRevealed && cell.hasMine" class="mine">
+          <img src="assets/mine.png" />
+        </span>
+        <span *ngIf="!cell.isRevealed && cell.isFlagged" class="mine">
+          <img src="assets/flag.png" />
+        </span>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,40 @@
+<main class="minesweeper-form">
+  <h1>Select your difficulty</h1>
+  <div class="minesweeper-form__buttons">
+    <button [ngClass]="{'active': selectedValue === 'easy'}" (click)="onSelectLevel($any('easy'))">Easy</button>
+    <button [ngClass]="{'active': selectedValue === 'medium'}" (click)="onSelectLevel($any('medium'))">Medium</button>
+    <button [ngClass]="{'active': selectedValue === 'hard'}" (click)="onSelectLevel($any('hard'))">Hard</button>
+    <button [ngClass]="{'active': selectedValue === 'personalized'}"
+      (click)="onSelectLevel($any('personalized'))">Personalized</button>
+  </div>
+
+  <form *ngIf="showForm" class="minesweeper-form__inputs" [formGroup]="settingsForm">
+
+    <div class="form-group">
+      <label for="numberOfSides">Number of Sides:</label>
+      <input type="number" id="numberOfSides" formControlName="numberOfSides" min="0">
+      <div class="error" *ngIf="numberOfSides?.touched && numberOfSides?.errors?.['required']">
+        This field is required.
+      </div>
+      <div class="error" *ngIf="numberOfSides?.touched && numberOfMines?.errors?.['min']">
+        The number of sides should be at least 2.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="numberOfMines">Number of Mines:</label>
+      <input type="number" id="numberOfMines" formControlName="numberOfMines" min="0">
+      <div class="error" *ngIf="numberOfMines?.touched && numberOfMines?.errors?.['required']">
+        This field is required.
+      </div>
+      <div class="error" *ngIf="numberOfMines?.touched && numberOfMines?.errors?.['min']">
+        There should be at least 1 mine.
+      </div>
+    </div>
+  </form>
+
+  <div class="minesweeper-form__start">
+    <button (click)="onStartLevel()">Start Game</button>
+    <button (click)="onLoadLevel()">Load Game</button>
+  </div>
+</main>
